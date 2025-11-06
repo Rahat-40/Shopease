@@ -12,6 +12,11 @@ function Register() {
   const navigate = useNavigate();
 
   const handleRegister = async () => {
+    setError("");
+    if(!name || !email || !password){
+      setError("All fields are required");
+      return;
+    }
     try {
       await API.post("/auth/register", { name, email, password, role });
       navigate("/login",{state:{ message: "Registered Successfully!Please Login."}});

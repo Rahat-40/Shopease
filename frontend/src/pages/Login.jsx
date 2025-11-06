@@ -20,17 +20,16 @@ function Login() {
   },[location.state,location.pathname,navigate]);
 
   const handleLogin = async () => {
-    try {
-      setError("");
-      setSuccessMsg("")
-      
+
+    setError("");
+    setSuccessMsg("")
+
+    try { 
       const res = await API.post("/auth/login", { email, password });
       const role = res.data.role;
-
-      // store data for checking
-      localStorage.setItem("userRole", role);
-      localStorage.setItem("userEmail", email);
-
+      sessionStorage.setItem("userRole", role);
+      sessionStorage.setItem("userEmail", email);
+      sessionStorage.setItem("token",res.data.token);
       // Redirect based on role
       if (role === "ADMIN") navigate("/admin");
       else if (role === "SELLER") navigate("/seller");
