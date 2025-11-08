@@ -3,77 +3,104 @@ import { Link, useNavigate } from "react-router-dom";
 function Navbar({ role }) {
   const navigate = useNavigate();
   const token = sessionStorage.getItem("token");
-  
-const handleLogout = () => {
-  sessionStorage.removeItem("userRole");
-  sessionStorage.removeItem("userEmail");
-  sessionStorage.removeItem("token");
-  navigate("/");
-};
 
+  const handleLogout = () => {
+    sessionStorage.removeItem("userRole");
+    sessionStorage.removeItem("userEmail");
+    sessionStorage.removeItem("token");
+    navigate("/");
+  };
 
   return (
-    <nav className="bg-gray-800 text-white p-4 flex justify-between items-center">
-
-      {/* Shopease Logo */}
-      <Link to="/" className="text-xl font-bold">Shopease</Link>
-      
-     
-      <ul className="flex space-x-6">
-
-      {/* Public navber*/}
-
+    <nav className="bg-white shadow-lg border-b border-gray-200 text-gray-700 p-4 flex justify-between items-center sticky top-0 z-50 ">
+      {/* Logo */}
+      {/* <Link to="/" className="text-2xl font-bold text-emerald-600">ShopEase</Link> */}
         {!role && (
           <>
-            <li><Link to="/products">Products</Link></li>
-            <li><Link to="/contact">Contact</Link></li>
+             <Link to="/" className="text-2xl font-bold text-emerald-600">ShopEase</Link>
           </>
         )}
 
-      {/* buyer navber */}
         {role === "BUYER" && (
           <>
-            <li><Link to="/buyer">Home</Link></li>
-            <li><Link to="/buyer/products">Products</Link></li>
-            <li><Link to="/buyer/contact">Contact</Link></li>
-            <li><Link to="/cart">Cart</Link></li>           {/* Added Cart */}
-            <li><Link to="/wishlist">Wishlist</Link></li>   {/* Added Wishlist */}
-            <li><Link to="/buyer/orders">My Orders</Link></li> 
+             <Link to="/buyer" className="text-2xl font-bold text-emerald-600">ShopEase</Link>
           </>
         )}
-
-      {/* seller navber */}
 
         {role === "SELLER" && (
           <>
-            <li><Link to="/seller">Home</Link></li>
-            <li><Link to="/seller/products">My Products</Link></li>
-            <li><Link to="/seller/products/new">Add Product</Link></li>
-            <li><Link to="/seller/orders">Orders</Link></li>
+             <Link to="/seller" className="text-2xl font-bold text-emerald-600">ShopEase</Link>
           </>
         )}
 
         {role === "ADMIN" && (
           <>
-            <li><Link to="/admin">Dashboard</Link></li>
-            <li><Link to="/admin/users">Users</Link></li>
-            <li><Link to="/admin/reports">Reports</Link></li>
+             <Link to="/admin" className="text-2xl font-bold text-emerald-600">ShopEase</Link>
+          </>
+        )}
+
+      {/* Nav Links */}
+      <ul className="flex space-x-6 text-sm font-semibold">
+        {!role && (
+          <>
+            <li><Link to="/products" className="hover:text-emerald-600">Products</Link></li>
+            <li><Link to="/contact" className="hover:text-emerald-600">Contact</Link></li>
+          </>
+        )}
+
+        {role === "BUYER" && (
+          <>
+            <li><Link to="/buyer" className="hover:text-emerald-600">Home</Link></li>
+            <li><Link to="/buyer/products" className="hover:text-emerald-600">Products</Link></li>
+            <li><Link to="/contact" className="hover:text-emerald-600">Contact</Link></li>
+            <li><Link to="/cart" className="hover:text-emerald-600">Cart</Link></li>
+            <li><Link to="/wishlist" className="hover:text-emerald-600">Wishlist</Link></li>
+            <li><Link to="/buyer/orders" className="hover:text-emerald-600">My Orders</Link></li>
+          </>
+        )}
+
+        {role === "SELLER" && (
+          <>
+            <li><Link to="/seller" className="hover:text-emerald-600">Home</Link></li>
+            <li><Link to="/seller/products" className="hover:text-emerald-600">My Products</Link></li>
+            <li><Link to="/seller/products/new" className="hover:text-emerald-600">Add Product</Link></li>
+            <li><Link to="/seller/orders" className="hover:text-emerald-600">Orders</Link></li>
+          </>
+        )}
+
+        {role === "ADMIN" && (
+          <>
+            <li><Link to="/admin" className="hover:text-emerald-600">Dashboard</Link></li>
+            <li><Link to="/admin/users" className="hover:text-emerald-600">Users</Link></li>
+            <li><Link to="/admin/reports" className="hover:text-emerald-600">Reports</Link></li>
           </>
         )}
       </ul>
-       
-       {/* for general it shows login and logout but in deshbord it shows logout*/}
 
+      {/* Auth Buttons */}
       <div className="flex items-center gap-2">
         {!token ? (
           !role && (
             <>
-              <Link to="/login" className="bg-white/10 hover:bg-white/20 px-3 py-1 rounded">Login</Link>
-              <Link to="/register" className="bg-indigo-500 hover:bg-indigo-600 px-3 py-1 rounded">Register</Link>
+              <Link
+                to="/login"
+                className="bg-white text-emerald-600 border border-emerald-600 outline-emerald-600 hover:bg-emerald-600 hover:text-white px-3 py-1 rounded  transition"
+              >
+                Login
+              </Link>
+              <Link
+                to="/register"
+                className="border border-emerald-600 bg-emerald-600 hover:bg-white hover:text-emerald-600 px-3 py-1 rounded text-white transition"
+              >
+                Register
+              </Link>
             </>
           )
         ) : (
-          <button onClick={handleLogout} className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded">
+          <button
+            onClick={handleLogout}
+            className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded text-white transition"
+          >
             Logout
           </button>
         )}

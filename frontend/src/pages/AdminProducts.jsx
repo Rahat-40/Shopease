@@ -62,63 +62,72 @@ export default function AdminProducts() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-base-200">
+    <div className="flex flex-col min-h-screen bg-gray-50">
       <Navbar role="ADMIN" />
       <main className="flex-grow max-w-6xl mx-auto p-6 w-full">
         <div className="flex items-center justify-between mb-4">
-          <h1 className="text-2xl font-semibold">Products</h1>
+          <h1 className="text-2xl font-semibold text-emerald-600">Products</h1>
           <div className="flex gap-2">
-            <input className="input input-bordered" placeholder="Search name" value={filters.q} onChange={e=>setFilters(f=>({...f, q:e.target.value}))} />
-            <input className="input input-bordered" placeholder="Filter category" value={filters.category} onChange={e=>setFilters(f=>({...f, category:e.target.value}))} />
-            <button className="btn" onClick={load}>Apply</button>
+            <input className="input input-bordered border-emerald-600 bg-white focus:ring-2 focus:ring-emerald-300 transition-all text-emerald-800 font-bold" placeholder="Search name" value={filters.q} onChange={e=>setFilters(f=>({...f, q:e.target.value}))} />
+            <input className="input input-bordered border-emerald-600 bg-white focus:ring-2 focus:ring-emerald-300 transition-all text-emerald-800 font-bold" placeholder="Filter category" value={filters.category} onChange={e=>setFilters(f=>({...f, category:e.target.value}))} />
+            <button className="btn bg-emerald-600 text-white border-emerald-600 hover:bg-white hover:text-emerald-600" onClick={load}>Apply</button>
           </div>
         </div>
         {msg && <div className="alert alert-info mb-3"><span>{msg}</span></div>}
-        <div className="card bg-base-100 border border-base-200">
+        <div className="card bg-white border border-gray-200 shadow-2xl rounded-lg">
           <div className="card-body overflow-x-auto">
-            {loading ? <div>Loading...</div> : (
-              <table className="table table-zebra">
-                <thead><tr><th>ID</th><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Seller</th><th>Active</th><th></th></tr></thead>
+            {loading ? <div className="text-center py-10 text-gray-500">Loading...</div> : (
+              <table className="table w-full">
+                <thead className="bg-emerald-600 sticky top-0 z-10"><tr className="text-white font-semibold"><th>ID</th><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Seller</th><th>Active</th><th className="text-right">Actions</th></tr></thead>
                 <tbody>
-                  {items.map(p => (
-                    <tr key={p.id}>
-                      <td>{p.id}</td>
-                      <td>
+                  {items.map((p,i) => (
+                    <tr key={p.id} className={i % 2 === 0 ? "bg-white" : "bg-gray-200"}>
+                      <td className="text-gray-900">{p.id}</td>
+                      <td className="text-gray-900">
                         {editing===p.id ? (
-                          <input className="input input-bordered input-sm" value={form.name||""} onChange={e=>setForm(s=>({...s,name:e.target.value}))} />
+                          <input className="input input-bordered input-sm bg-gray-400 focus:ring-2 focus:ring-emerald-300 transition-all" value={form.name||""} onChange={e=>setForm(s=>({...s,name:e.target.value}))} />
                         ) : p.name}
                       </td>
-                      <td>
+                      <td  className="text-gray-900">
                         {editing===p.id ? (
-                          <input className="input input-bordered input-sm" value={form.category||""} onChange={e=>setForm(s=>({...s,category:e.target.value}))} />
+                          <input className="input input-bordered input-sm bg-gray-400 focus:ring-2 focus:ring-emerald-300 transition-all" value={form.category||""} onChange={e=>setForm(s=>({...s,category:e.target.value}))} />
                         ) : (p.category || "—")}
                       </td>
-                      <td>
+                      <td  className="text-red-500">
                         {editing===p.id ? (
-                          <input className="input input-bordered input-sm w-24 text-right" value={form.price??0} onChange={e=>setForm(s=>({...s,price:e.target.value}))} />
+                          <input className="input input-bordered input-sm w-24 text-right bg-gray-400 focus:ring-2 focus:ring-emerald-300 transition-all" value={form.price??0} onChange={e=>setForm(s=>({...s,price:e.target.value}))} />
                         ) : Number(p.price||0).toFixed(2)}
+                        <span> BDT</span>
                       </td>
-                      <td>
+                      <td className="text-gray-900">
                         {editing===p.id ? (
-                          <input className="input input-bordered input-sm w-20 text-right" value={form.stock??0} onChange={e=>setForm(s=>({...s,stock:e.target.value}))} />
+                          <input className="input input-bordered input-sm w-20 text-right bg-gray-400 focus:ring-2 focus:ring-emerald-300 transition-all" value={form.stock??0} onChange={e=>setForm(s=>({...s,stock:e.target.value}))} />
                         ) : (p.stock ?? 0)}
                       </td>
-                      <td>{p.sellerEmail}</td>
+                      <td  className="text-gray-900">{p.sellerEmail}</td>
                       <td>
-                        <input type="checkbox" className="toggle toggle-primary toggle-sm"
+                        <label className="relative inline-flex items-center cursor-pointer">
+                        <input
+                          type="checkbox"
+                          className="sr-only peer"
                           checked={!!p.active}
-                          onChange={e=>toggleActive(p.id, e.target.checked)} />
-                      </td>
+                          onChange={(e) => toggleActive(p.id, e.target.checked)}
+                        />
+                        <div className="w-10 h-5 bg-gray-300 rounded-full peer-checked:bg-emerald-600 transition-colors duration-200"></div>
+                        <div className="absolute left-0.5 top-0.5 bg-white w-4 h-4 rounded-full transition-transform duration-200 peer-checked:translate-x-5"></div>
+                      </label>
+                    </td>
+
                       <td className="text-right">
                         {editing===p.id ? (
                           <div className="join">
-                            <button className="btn btn-sm join-item" onClick={save}>Save</button>
-                            <button className="btn btn-ghost btn-sm join-item" onClick={cancelEdit}>Cancel</button>
+                            <button className="btn bg-emerald-600 border-emerald-600 text-white btn-sm join-item" onClick={save}>Save</button>
+                            <button className="btn bg-red-500 text-white border-red-500 btn-sm join-item" onClick={cancelEdit}>Cancel</button>
                           </div>
                         ) : (
-                          <div className="join">
-                            <button className="btn btn-ghost btn-sm join-item" onClick={()=>startEdit(p)}>Edit</button>
-                            <button className="btn btn-error btn-sm join-item" onClick={()=>del(p.id)}>Delete</button>
+                          <div className="flex-justify-end space-x-1">
+                            <button className="btn bg-white border-emerald-600 text-emerald-600 btn-sm  hover:bg-emerald-600 hover:text-white" onClick={()=>startEdit(p)}>Edit</button>
+                            <button className="btn bg-white border-red-600 btn-sm  text-red-600" onClick={()=>del(p.id)}>Delete</button>
                           </div>
                         )}
                       </td>

@@ -97,13 +97,13 @@ function Cart() {
     );
 
   return (
-    <div className="flex flex-col min-h-screen bg-base-200">
+    <div className="flex flex-col min-h-screen bg-gray-50">
       <Navbar role="BUYER" />
 
       <main className="flex-grow max-w-6xl mx-auto p-6">
         <div className="relative mb-6">
           <div className="flex justify-center">
-            <h2 className="text-3xl font-semibold">My Cart</h2>
+            <h2 className="text-3xl font-semibold text-emerald-600">My Cart</h2>
           </div>
           {cartItems.length > 0 && (
             <div className="absolute inset-y-0 right-0 hidden sm:flex items-center">
@@ -126,7 +126,7 @@ function Cart() {
         {cartItems.length === 0 ? (
           <div className="text-center py-16">
             <p className="text-base-content/70 mb-4">Your cart is empty.</p>
-            <button onClick={() => navigate("/products")} className="btn btn-primary">
+            <button onClick={() => navigate("/products")} className="btn btn-emerald-600">
               Browse products
             </button>
           </div>
@@ -135,26 +135,26 @@ function Cart() {
             {/* Left: items (2 cols on lg+) */}
             <section className="lg:col-span-2 space-y-4">
               {cartItems.map((item) => (
-                <div key={item.id} className="card bg-base-100 shadow border border-base-200 overflow-hidden">
+                <div key={item.id} className="card bg-white shadow-md border border-gray-200 hover:shadow-xl transition duration-300">
                   <div className="card-body p-4 sm:p-5">
                     <div className="flex gap-4 items-start">
                       {/* Checkbox column */}
                       <div className="pt-1">
                         <input
                           type="checkbox"
-                          className="checkbox checkbox-primary"
+                          className="checkbox checkbox-success"
                           checked={!!selectedItems[item.product.id]}
                           onChange={(e) => handleSelectItem(item.product.id, e.target.checked)}
                         />
                       </div>
 
                       {/* Image */}
-                      <div className="w-24 h-24 flex-shrink-0 rounded bg-base-200 overflow-hidden">
+                      <div className="w-24 h-24 flex-shrink-0 rounded-lg bg-gray-100 overflow-hidden flex items-center justify-center">
                         {item.product.imageUrl ? (
                           <img
                             src={item.product.imageUrl}
                             alt={item.product.name}
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-cover text-gray-500"
                           />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center text-base-content/60 text-sm">
@@ -167,17 +167,17 @@ function Cart() {
                       <div className="flex-1">
                         <div className="flex items-start justify-between gap-3">
                           <div>
-                            <h3 className="font-semibold line-clamp-1">{item.product.name}</h3>
-                            <p className="text-sm text-base-content/70">
-                              Unit: ${Number(item.product.price || 0).toFixed(2)}
+                            <h3 className="font-semibold text-base-200 line-clamp-1">{item.product.name}</h3>
+                            <p className="text-sm text-red-500">
+                              Unit: ৳ {Number(item.product.price || 0).toFixed(2)}
                             </p>
                           </div>
                           <div className="text-right">
-                            <p className="font-semibold">
-                              ${(Number(item.product.price || 0) * Number(item.quantity || 0)).toFixed(2)}
+                            <p className="font-semibold text-emerald-600">
+                              ৳{(Number(item.product.price || 0) * Number(item.quantity || 0)).toFixed(2)}
                             </p>
                             <button
-                              className="btn btn-ghost btn-xs mt-1"
+                              className="btn bg-white  text-red-600 border-red-600 hover:bg-red-600 hover:text-white btn-xs mt-1"
                               onClick={() => handleRemoveItem(item.product.id)}
                               disabled={loading}
                             >
@@ -187,7 +187,7 @@ function Cart() {
                         </div>
 
                         {/* Quantity display; optionally replace with buttons + input per best practices */}
-                        <p className="mt-2 text-sm">
+                        <p className="mt-2 text-sm text-base-200">
                           Quantity: <span className="font-medium">{item.quantity}</span>
                         </p>
                       </div>
@@ -200,33 +200,33 @@ function Cart() {
             {/* Right: summary */}
             <aside className="lg:col-span-1">
               <div className="lg:sticky lg:top-6">
-                <div className="card bg-base-100 shadow border border-base-200">
+               <div className="card bg-white shadow-md hover:shadow-xl border border-gray-200 transition duration-300">
                   <div className="card-body space-y-3">
-                    <h3 className="card-title">Order Summary</h3>
-                    <div className="flex justify-between text-sm">
+                    <h3 className="card-title text-emerald-600">Order Summary</h3>
+                    <div className="flex justify-between text-sm text-base-300">
                       <span>Selected items</span>
                       <span>{selectedList.length}</span>
                     </div>
-                    <div className="flex justify-between text-sm">
+                    <div className="flex justify-between text-sm text-base-200">
                       <span>Subtotal</span>
-                      <span>${subtotal.toFixed(2)}</span>
+                      <span>৳ {subtotal.toFixed(2)}</span>
                     </div>
-                    <div className="flex justify-between text-sm">
-                      <span>Shipping</span>
-                      <span className="text-base-content/70">Calculated at checkout</span>
+                    <div className="flex justify-between text-sm text-base-200">
+                      <span>Shipping </span>
+                      <span className="text-gray-500"> ৳00.00</span>
                     </div>
-                    <div className="flex justify-between text-sm">
+                    <div className="flex justify-between text-sm text-base-300">
                       <span>Taxes</span>
-                      <span className="text-base-content/70">Estimated</span>
+                      <span className="text-gray-500">৳00.00</span>
                     </div>
-                    <div className="divider my-2" />
-                    <div className="flex justify-between font-semibold">
+                    <hr className="border-t border-gray-500 my-2" />
+                    <div className="flex justify-between font-bold text-base-300">
                       <span>Total</span>
-                      <span>${subtotal.toFixed(2)}</span>
+                      <span className="text-red-500">৳{subtotal.toFixed(2)}</span>
                     </div>
                     <button
                       onClick={handleProceedToCheckout}
-                      className="btn btn-primary w-full"
+                      className="btn bg-emerald-600 border-none hover:bg-emerald-700 w-full"
                       disabled={selectedList.length === 0 || loading}
                     >
                       Proceed to Checkout
@@ -250,3 +250,6 @@ function Cart() {
 }
 
 export default Cart;
+
+
+

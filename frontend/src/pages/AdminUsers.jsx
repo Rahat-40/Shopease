@@ -4,7 +4,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { adminListUsers, adminSetUserRole, adminDeleteUser } from "../services/admin";
 
-export default function AdminUsers() {
+function AdminUsers() {
   const [q, setQ] = useState("");
   const [users, setUsers] = useState([]);
   const [msg, setMsg] = useState("");
@@ -42,35 +42,35 @@ export default function AdminUsers() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-base-200">
+    <div className="flex flex-col min-h-screen bg-gray-50">
       <Navbar role="ADMIN" />
       <main className="flex-grow max-w-5xl mx-auto p-6 w-full">
         <div className="flex items-center justify-between mb-4">
-          <h1 className="text-2xl font-semibold">Users</h1>
+          <h1 className="text-2xl font-semibold text-emerald-600 ">Users</h1>
           <div className="flex gap-2">
-            <input className="input input-bordered" placeholder="Search email" value={q} onChange={e=>setQ(e.target.value)} />
-            <button className="btn" onClick={load}>Search</button>
+            <input className="input input-bordered border-emerald-600 bg-white focus:ring-2 focus:ring-emerald-300 transition-all text-emerald-800 font-bold" placeholder="Search email" value={q} onChange={e=>setQ(e.target.value)} />
+            <button className="btn bg-emerald-600 text-white border-emerald-600 hover:bg-white hover:text-emerald-600" onClick={load}>Search</button>
           </div>
         </div>
         {msg && <div className="alert alert-info mb-3"><span>{msg}</span></div>}
-        <div className="card bg-base-100 border border-base-200">
+        <div className="card bg-white border border-gray-200 shadow-2xl rounded-lg">
           <div className="card-body overflow-x-auto">
-            {loading ? <div>Loading...</div> : (
-              <table className="table table-zebra">
-                <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Role</th><th></th></tr></thead>
+            {loading ? <div className="text-center py-10 text-gray-500">Loading...</div> : (
+              <table className="table w-full">
+                <thead className="bg-emerald-600 sticky top-0 z-10"><tr className="text-white font-semibold"><th>ID</th><th>Name</th><th>Email</th><th>Role</th><th className="text-right"> Action</th></tr></thead>
                 <tbody>
-                  {users.map(u => (
-                    <tr key={u.id}>
-                      <td>{u.id}</td>
-                      <td>{u.name || "—"}</td>
-                      <td>{u.email}</td>
+                  {users.map((u, i) => (
+                    <tr key={u.id} className={i % 2 === 0 ? "bg-white" : "bg-gray-200"}>
+                      <td className="text-gray-900">{u.id}</td>
+                      <td className="text-gray-900">{u.name || "—"}</td>
+                      <td className="text-gray-900">{u.email}</td>
                       <td>
                         <select className="select select-bordered select-sm" value={u.role} onChange={e=>changeRole(u.id, e.target.value)}>
                           <option>BUYER</option><option>SELLER</option><option>ADMIN</option>
                         </select>
                       </td>
                       <td className="text-right">
-                        <button className="btn btn-error btn-sm" onClick={()=>deleteUser(u.id)}>Delete</button>
+                        <button className="btn bg-white text-red-500 border-red-500 hover:bg-red-500 hover:text-white btn-sm" onClick={()=>deleteUser(u.id)}>Delete</button>
                       </td>
                     </tr>
                   ))}
@@ -84,3 +84,4 @@ export default function AdminUsers() {
     </div>
   );
 }
+export default AdminUsers;

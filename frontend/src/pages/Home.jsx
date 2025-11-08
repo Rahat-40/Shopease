@@ -9,21 +9,21 @@ function ProductCard({ p, onRequireAuth }) {
   const token = sessionStorage.getItem("token");
   const add = () => (!token ? onRequireAuth() : console.log("add-to-cart", p.id));
   return (
-    <div className="card bg-base-100 border border-base-300">
-      <figure className="h-48 bg-base-200 overflow-hidden">
-        {p.imageUrl ? <img src={p.imageUrl} alt={p.name} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-base-content/60">No Image</div>}
+     <div className="card bg-white border border-gray-200 shadow-lg hover:shadow-2xl hover:-translate-y-1 transition duration-300">
+      <figure className="h-48 bg-gray-300 overflow-hidden">
+        {p.imageUrl ? <img src={p.imageUrl} alt={p.name} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-gray-300">No Image</div>}
       </figure>
       <div className="card-body">
-        <h3 className="card-title text-base">{p.name}</h3>
-        <p className="text-sm text-base-content/70 line-clamp-2">{p.description}</p>
+        <h3 className="card-title text-base-300">{p.name}</h3>
+        <p className="text-sm text-gray-600 line-clamp-2">{p.description}</p>
         <div className="flex items-center justify-between">
-          <span className="font-semibold">${Number(p.price || 0).toFixed(2)}</span>
+          <span className="font-semibold text-red-400">৳{Number(p.price || 0).toFixed(2)}</span>
           <span className={`badge ${p.active ? "badge-success" : "badge-ghost"}`}>{p.active ? "Available" : "Inactive"}</span>
         </div>
         <div className="card-actions justify-between mt-2">
-          <Link className="btn btn-ghost btn-sm" to={`/products/${p.id}`}>Details</Link>
+          <Link className="btn  btn-sm bg-emerald-600 border-emerald-600 hover:bg-white hover:text-emerald-600" to={`/products/${p.id}`}>Details</Link>
           <div className="join">
-            <button className="btn btn-outline btn-sm join-item" onClick={add}>Add to Cart</button>
+            <button className="btn  btn-sm join-item bg-white border-emerald-600 text-emerald-600 hover:bg-emerald-600 hover:text-white" onClick={add}>Add to Cart</button>
           </div>
         </div>
       </div>
@@ -50,15 +50,15 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="flex flex-col min-h-screen bg-base-200">
+    <div className="flex flex-col min-h-screen bg-gray-50">
       <Navbar />
-      <div className="bg-base-100 border-b border-base-300">
+      <div className="bg-gradient-to-r from-emerald-600 to-teal-500 text-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-6 py-10">
           <h1 className="text-3xl sm:text-4xl font-bold">Welcome to ShopEase</h1>
-          <p className="mt-2 text-base-content/70">Browse products freely. Sign in to add to cart or buy.</p>
+          <p className="mt-2 opacity-90">Browse products freely. Sign in to add to cart or buy.</p>
           <div className="mt-4 flex gap-2">
-            <button className="btn btn-primary" onClick={() => navigate("/register")}>Get Started</button>
-            <button className="btn btn-ghost" onClick={() => navigate("/products")}>Explore Products</button>
+            <button className="btn bg-white text-emerald-600 border border-white hover:bg-emerald-600 hover:text-white" onClick={() => navigate("/register")}>Get Started</button>
+            <button className="btn bg-transparent border border-white hover:bg-white hover:text-emerald-600" onClick={() => navigate("/products")}>Explore Products</button>
           </div>
         </div>
       </div>

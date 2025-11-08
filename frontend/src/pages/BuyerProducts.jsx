@@ -2,8 +2,10 @@ import React, { useEffect, useMemo, useState } from "react";
 import { getAllProducts } from "../services/productService";
 import AddToCartWishlistButtons from "../components/AddToCartWishlistButtons";
 import { Link } from "react-router-dom";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
-function BuyerProducts() {
+export default function BuyerProducts() {
   const [products, setProducts] = useState([]);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(true);
@@ -45,138 +47,146 @@ function BuyerProducts() {
   }, [products, q, category, sort]);
 
   const SkeletonCard = () => (
-    <div className="card bg-base-100 border border-base-200 rounded-2xl shadow-sm animate-pulse overflow-hidden">
-      <div className="h-48 bg-base-200" />
+    <div className="card bg-white border border-gray-200 rounded-xl shadow-sm animate-pulse overflow-hidden">
+      <div className="h-48 bg-gray-200" />
       <div className="p-4">
-        <div className="h-5 w-2/3 bg-base-200 rounded mb-3" />
-        <div className="h-6 w-1/3 bg-base-200 rounded mb-4" />
-        <div className="h-10 w-full bg-base-200 rounded" />
+        <div className="h-5 w-2/3 bg-gray-200 rounded mb-3" />
+        <div className="h-6 w-1/3 bg-gray-200 rounded mb-4" />
+        <div className="h-10 w-full bg-gray-200 rounded" />
       </div>
     </div>
   );
 
-  if (loading) {
-    return (
-      <div className="max-w-6xl mx-auto p-6">
-        <div className="mb-6">
-          <h2 className="text-2xl font-semibold">Products</h2>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {Array.from({ length: 9 }).map((_, i) => <SkeletonCard key={i} />)}
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="max-w-6xl mx-auto p-6">
-      {/* Header + controls */}
-      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <h2 className="text-2xl font-semibold">Products</h2>
-        <div className="flex flex-col sm:flex-row gap-3">
-          <div className="form-control">
-            <div className="input input-bordered flex items-center gap-2">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 opacity-60" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <circle cx="11" cy="11" r="7" />
-                <path d="M20 20l-3.5-3.5" />
-              </svg>
-              <input
-                type="text"
-                className="grow"
-                placeholder="Search products"
-                value={q}
-                onChange={(e)=> setQ(e.target.value)}
-              />
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      <Navbar role={sessionStorage.getItem("userRole") || ""} />
+
+      <main className="max-w-7xl mx-auto p-6 flex-grow">
+        {/* Header + Filters */}
+        <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          {/* Title */}
+          <h2 className="text-2xl font-semibold text-emerald-600">Products</h2>
+
+          {/* Filters */}
+          <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
+            {/* Search */}
+            <div className="form-control w-full sm:w-auto">
+              <div className="bg-white border border-emerald-600 input input-bordered flex items-center gap-2 focus-within:ring focus-within:ring-green-400 transition">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4 text-emerald-600"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                >
+                  <circle cx="11" cy="11" r="7" />
+                  <path d="M20 20l-3.5-3.5" />
+                </svg>
+                <input
+                  type="text"
+                  className="grow outline-none bg-transparent placeholder-emerald-600 text-gray-800"
+                  placeholder="Search products"
+                  value={q}
+                  onChange={e => setQ(e.target.value)}
+                />
+              </div>
             </div>
+
+            {/* Category */}
+            <select
+              className="select select-bordered w-full sm:w-auto"
+              value={category}
+              onChange={e => setCategory(e.target.value)}
+            >
+              {categories.map(c => (
+                <option key={c} value={c}>{c}</option>
+              ))}
+            </select>
+
+            {/* Sort */}
+            <select
+              className="select select-bordered w-full sm:w-auto"
+              value={sort}
+              onChange={e => setSort(e.target.value)}
+            >
+              <option value="RELEVANCE">Sort: Relevance</option>
+              <option value="PRICE_ASC">Price: Low to High</option>
+              <option value="PRICE_DESC">Price: High to Low</option>
+            </select>
           </div>
-          <select
-            className="select select-bordered"
-            value={category}
-            onChange={(e)=> setCategory(e.target.value)}
-          >
-            {categories.map(c => <option key={c} value={c}>{c}</option>)}
-          </select>
-          <select
-            className="select select-bordered"
-            value={sort}
-            onChange={(e)=> setSort(e.target.value)}
-          >
-            <option value="RELEVANCE">Sort: Relevance</option>
-            <option value="PRICE_ASC">Price: Low to High</option>
-            <option value="PRICE_DESC">Price: High to Low</option>
-          </select>
         </div>
-      </div>
 
-      {message && (
-        <div className={`alert ${message.includes("Failed") ? "alert-error" : "alert-info"} mb-4`}>
-          <span>{message}</span>
-        </div>
-      )}
+        {/* Loading Skeleton */}
+        {loading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {Array.from({ length: 9 }).map((_, i) => <SkeletonCard key={i} />)}
+          </div>
+        ) : message && !filtered.length ? (
+          <div className="text-center py-16">
+            <p className="text-gray-500 mb-4">{message}</p>
+            <button
+              className="btn btn-primary hover:bg-green-600 transition"
+              onClick={() => { setQ(""); setCategory("ALL"); setSort("RELEVANCE"); }}
+            >
+              Reset filters
+            </button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {filtered.map(prod => {
+              const price = Number(prod.price || 0).toFixed(2);
+              const inStock = prod.stock == null ? true : prod.stock > 0;
 
-      {filtered.length === 0 ? (
-        <div className="text-center py-16">
-          <p className="text-base-content/70 mb-4">No products match your filters.</p>
-          <button className="btn btn-primary" onClick={()=> { setQ(""); setCategory("ALL"); setSort("RELEVANCE"); }}>
-            Reset filters
-          </button>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {filtered.map(prod => {
-            const price = Number(prod.price || 0).toFixed(2);
-            return (
-              <div key={prod.id} className="card bg-base-100 border border-base-200 rounded-2xl shadow-sm hover:shadow-md transition overflow-hidden">
-                <Link to={`/products/${prod.id}`}>
-                  <figure className="bg-base-200 h-48">
-                    {prod.imageUrl ? (
-                      <img
-                        src={prod.imageUrl}
-                        alt={prod.name}
-                        className="w-full h-full object-cover"
-                        loading="lazy"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-base-content/60 text-sm">
-                        No Image
-                      </div>
-                    )}
-                  </figure>
-                </Link>
-                
-                <div className="p-4">
+              return (
+                <div
+                  key={prod.id}
+                  className="card bg-white border border-gray-200 rounded-xl shadow-lg hover:shadow-2xl transition-shadow overflow-hidden"
+                >
                   <Link to={`/products/${prod.id}`}>
-                    <h3 className="font-semibold line-clamp-1">{prod.name}</h3>
+                    <figure className="bg-gray-200 h-48">
+                      {prod.imageUrl ? (
+                        <img
+                          src={prod.imageUrl}
+                          alt={prod.name}
+                          className="w-full h-full object-cover transition-transform duration-300 hover:scale-105 text-gray-500"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-gray-400 text-sm">
+                          No Image
+                        </div>
+                      )}
+                    </figure>
                   </Link>
 
-                  {prod.category && (
-                    <p className="text-xs text-base-content/60 mt-0.5">{prod.category}</p>
-                  )}
+                  <div className="p-4">
+                    <Link to={`/products/${prod.id}`}>
+                      <h3 className="font-semibold line-clamp-1 text-gray-800">{prod.name}</h3>
+                    </Link>
 
-                  {/* Price + stock badge */}
-                  <div className="mt-2 flex items-center gap-2">
-                    <div className="text-xl font-bold">${price}</div>
-                    {(() => {
-                      const inStock = prod.stock == null ? true : prod.stock > 0;
-                      const badgeClass = inStock ? "badge-success" : "badge-error";
-                      return (
-                        <span className={`badge ${badgeClass}`}>
-                          {inStock ? "In stock" : "Out of stock"}
-                        </span>
-                      );
-                    })()}
-                  </div>
-                  <div className="mt-3">
-                    <AddToCartWishlistButtons product={prod} size="sm" layout="row" />
+                    {prod.category && (
+                      <p className="text-xs text-gray-500 mt-0.5">{prod.category}</p>
+                    )}
+
+                    <div className="mt-2 flex items-center gap-2">
+                      <span className="text-xl font-bold text-red-500">৳ {price}</span>
+                      <span className={`badge ${inStock ? "badge-success" : "badge-error"}`}>
+                        {inStock ? "In stock" : "Out of stock"}
+                      </span>
+                    </div>
+
+                    <div className="mt-3">
+                      <AddToCartWishlistButtons product={prod} size="sm" layout="row" />
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
+              );
+            })}
+          </div>
+        )}
+      </main>
+
+      <Footer />
     </div>
   );
 }
-
-export default BuyerProducts;

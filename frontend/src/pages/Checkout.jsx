@@ -98,12 +98,12 @@ function Checkout() {
     return <p className="text-center mt-6">No items to checkout.</p>;
 
   return (
-    <div className="flex flex-col min-h-screen bg-base-200">
+    <div className="flex flex-col min-h-screen bg-gray-50">
       <Navbar role="BUYER" />
 
       <main className="flex-grow">
-        <div className="mx-auto max-w-5xl px-4 py-6">
-          <h1 className="text-3xl font-semibold text-center mb-6">Checkout</h1>
+        <div className="mx-auto max-w-6xl px-6 py-8">
+          <h1 className="text-3xl font-bold text-center text-emerald-600 mb-6">Checkout</h1>
 
           {/* Inline feedback */}
           {message && (
@@ -121,22 +121,22 @@ function Checkout() {
             {/* Left: Items */}
             <section className="lg:col-span-2 space-y-4">
               {items.map((item) => (
-                <div key={item.product.id} className="card bg-base-100 shadow">
+                <div key={item.product.id} className="card bg-white border border-gray-200 shadow-md hover:shadow-xl hover:-translate-y-1 transition duration-300">
                   <div className="card-body p-4 sm:p-5">
                     <div className="flex items-start gap-4">
                       <img
                         src={item.imageUrl}
                         alt={item.product.name}
-                        className="w-20 h-20 rounded object-cover"
+                        className="w-20 h-20 rounded object-cover bg-gray-300 text-gray-600"
                         loading="lazy"
                       />
                       <div className="flex-1">
                         <div className="flex items-start justify-between gap-3">
                           <div>
-                            <h3 className="font-semibold line-clamp-1">
+                            <h3 className="font-semibold text-gray-800 line-clamp-1">
                               {item.product.name}
                             </h3>
-                            <p className="text-sm text-base-content/70">
+                            <p className="text-sm text-gray-600">
                               Unit price: ${item.price.toFixed(2)}
                             </p>
                             <div className="mt-1">
@@ -146,11 +146,11 @@ function Checkout() {
                             </div>
                           </div>
                           <div className="text-right">
-                            <p className="font-semibold transition-colors">
+                            <p className="font-semibold text-emerald-600 transition-colors">
                               ${(item.price * item.quantity).toFixed(2)}
                             </p>
                             <button
-                              className="btn btn-ghost btn-xs mt-1"
+                              className="btn border-red-600 bg-white text-red-600 hover:bg-red-600 hover:text-white btn-xs mt-3"
                               disabled={loading}
                               onClick={() => handleRemove(item.product.id)}
                             >
@@ -194,7 +194,7 @@ function Checkout() {
                               +
                             </button>
                           </div>
-                          <p className="text-xs text-base-content/60 mt-1">
+                          <p className="text-xs text-gray-500 mt-1">
                             Tip: Use buttons or edit the field for precise
                             quantities.
                           </p>
@@ -209,43 +209,42 @@ function Checkout() {
             {/* Right: Summary */}
             <aside className="lg:col-span-1">
               <div className="lg:sticky lg:top-6">
-                <div className="card bg-base-100 shadow">
+                <div className="card bg-white shadow-md hover:shadow-xl border border-gray-200 transition duration-300">
                   <div className="card-body space-y-3">
-                    <h2 className="card-title">Order Summary</h2>
+                    <h2 className="card-title text-emerald-600 font-bold">Order Summary</h2>
 
-                    <div className="flex justify-between text-sm">
+                    <div className="flex justify-between text-sm text-gray-800 font-semibold">
                       <span>Items ({items.length})</span>
                       <span>${subtotal.toFixed(2)}</span>
                     </div>
-                    <div className="flex justify-between text-sm">
+                    <div className="flex justify-between text-sm text-gray-800">
                       <span>Shipping</span>
-                      <span className="text-base-content/70">
-                        $00.00
+                      <span className="text-gray-500">
+                        ৳ 00.00
                       </span>
                     </div>
-                    <div className="flex justify-between text-sm">
+                    <div className="flex justify-between text-sm text-gray-800">
                       <span>Taxes</span>
-                      <span className="text-base-content/70">$00.00</span>
+                      <span className="text-gray-500">৳ 00.00</span>
                     </div>
+                    <hr className="border-t border-gray-500 my-2" />
 
-                    <div className="divider my-2" />
-
-                    <div className="flex justify-between font-semibold">
+                    <div className="flex justify-between font-bold text-gray-800">
                       <span>Total</span>
-                      <span>${totalPrice.toFixed(2)}</span>
+                      <span className="text-red-600">৳{totalPrice.toFixed(2)}</span>
                     </div>
 
                     <button
                       onClick={handlePlaceOrder}
                       disabled={loading}
-                      className={`btn btn-primary w-full ${
+                      className={`btn bg-emerald-600 border-emerald-600 w-full hover:bg-emerald-700 ${
                         loading ? "btn-disabled" : ""
                       }`}
                     >
                       {loading ? "Placing Order..." : "Place Order"}
                     </button>
 
-                    <div className="text-xs text-base-content/60">
+                    <div className="text-xs text-gray-500 mt-1">
                       By placing your order, you agree to ShopEase’s Terms and
                       Privacy Policy.
                     </div>

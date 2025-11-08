@@ -27,50 +27,70 @@ function AdminHome() {
   }, []);
 
   return (
-    <div className="flex flex-col min-h-screen bg-base-200">
+    <div className="flex flex-col min-h-screen bg-gray-50">
       <Navbar role="ADMIN" />
+
+       <div className="bg-gradient-to-r from-emerald-600 to-teal-500 text-white border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-6 py-10">
+          <h1 className="text-3xl sm:text-4xl font-bold">Welcome To Admin Dashboard</h1>
+          <p className="mt-2 opacity-90">See your users and seller products . Manage users and give support to the users.</p>
+        </div>
+      </div>
+
       <main className="flex-grow p-6 w-full max-w-7xl mx-auto">
         <div className="mb-6">
-          <h1 className="text-3xl font-semibold">Admin Dashboard</h1>
-          <p className="opacity-70">Overview and quick actions</p>
+          <h1 className="text-3xl font-semibold text-emerald-600">Admin Dashboard</h1>
+          <p className="opacity-70 text-gray-800">Overview and quick actions</p>
         </div>
 
         {msg && <div className="alert alert-error mb-4"><span>{msg}</span></div>}
 
-        <div className="stats stats-vertical lg:stats-horizontal shadow bg-base-100 mb-6">
-          <div className="stat">
-            <div className="stat-title">Users</div>
-            <div className="stat-value">{loading ? "…" : stats.users}</div>
-            <div className="stat-actions"><Link className="btn btn-ghost btn-xs mt-2" to="/admin/users">Manage</Link></div>
-          </div>
-          <div className="stat">
-            <div className="stat-title">Products</div>
-            <div className="stat-value">{loading ? "…" : stats.products}</div>
-            <div className="stat-actions"><Link className="btn btn-ghost btn-xs mt-2" to="/admin/products">Manage</Link></div>
-          </div>
-          <div className="stat">
-            <div className="stat-title">Pending Orders</div>
-            <div className="stat-value">{loading ? "…" : stats.ordersPending}</div>
-            <div className="stat-actions"><Link className="btn btn-ghost btn-xs mt-2" to="/admin/orders">Manage</Link></div>
-          </div>
-          <div className="stat">
-            <div className="stat-title">Open Tickets</div>
-            <div className="stat-value">{loading ? "…" : stats.ticketsOpen}</div>
-            <div className="stat-actions"><Link className="btn btn-ghost btn-xs mt-2" to="/admin/messages">Manage</Link></div>
-          </div>
-        </div>
-
-        <div className="card bg-base-100 border border-base-200 mb-6">
-          <div className="card-body">
-            <h2 className="card-title">Quick actions</h2>
-            <div className="flex flex-wrap gap-3">
-              <Link className="btn btn-primary" to="/admin/users">Users</Link>
-              <Link className="btn btn-secondary" to="/admin/products">Products</Link>
-              <Link className="btn btn-warning" to="/admin/orders">Orders</Link>
-              <Link className="btn btn-error" to="/admin/messages">Support</Link>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+          <Link
+            to="/admin/users"
+            className="bg-white border border-gray-200 shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-200 rounded-lg p-6 flex flex-col items-center justify-center text-center"
+          >
+            <div className="text-sm font-bold text-gray-900 mb-2">Users</div>
+            <div className="text-3xl font-bold text-gray-800">{loading ? "…" : stats.users}</div>
+            <div className="mt-2">
+              <span className="text-xs text-emerald-600 font-medium">Manage →</span>
             </div>
-          </div>
+          </Link>
+
+          <Link
+            to="/admin/products"
+            className="bg-white border border-gray-200 shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-200 rounded-lg p-6 flex flex-col items-center justify-center text-center"
+          >
+            <div className="text-sm font-bold text-gray-900 mb-2">Products</div>
+            <div className="text-3xl font-bold text-gray-800">{loading ? "…" : stats.products}</div>
+            <div className="mt-2">
+              <span className="text-xs text-emerald-600 font-medium">Manage →</span>
+            </div>
+          </Link>
+
+          <Link
+            to="/admin/orders"
+            className="bg-white border border-gray-200 shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-200 rounded-lg p-6 flex flex-col items-center justify-center text-center"
+          >
+            <div className="text-sm font-bold text-gray-900 mb-2">Pending Orders</div>
+            <div className="text-3xl font-bold text-gray-800">{loading ? "…" : stats.ordersPending}</div>
+            <div className="mt-2">
+              <span className="text-xs text-emerald-600 font-medium">Manage →</span>
+            </div>
+          </Link>
+
+          <Link
+            to="/admin/messages"
+            className="bg-white border border-gray-200 shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-200 rounded-lg p-6 flex flex-col items-center justify-center text-center"
+          >
+            <div className="text-sm font-bold text-gray-900 mb-2">Open Messages</div>
+            <div className="text-3xl font-bold text-gray-800">{loading ? "…" : stats.ticketsOpen}</div>
+            <div className="mt-2">
+              <span className="text-xs text-emerald-600 font-medium">Manage →</span>
+            </div>
+          </Link>
         </div>
+        
       </main>
       <Footer />
     </div>

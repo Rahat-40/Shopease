@@ -69,12 +69,12 @@ function OrdersBuyer() {
   if (loading) return <p className="text-center mt-6 text-lg">Loading orders...</p>;
 
   return (
-    <div className="flex flex-col min-h-screen bg-base-200">
+    <div className="flex flex-col min-h-screen bg-gray-50">
       <Navbar role="BUYER" />
       <main className="flex-grow p-6 max-w-6xl mx-auto">
         <div className="relative mb-6">
           <div className="flex justify-center">
-            <h2 className="text-3xl font-semibold">My Orders</h2>
+            <h2 className="text-3xl font-semibold text-emerald-600">My Orders</h2>
           </div>
           {orders.length > 0 && (
             <div className="absolute inset-y-0 right-0 hidden sm:flex items-center">
@@ -92,20 +92,20 @@ function OrdersBuyer() {
         )}
 
         <div className="mb-4 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
-          <div className="tabs tabs-boxed">
+          <div className="tabs tabs-boxed bg-gray-500">
             {["ALL", "PLACED", "CONFIRMED", "SHIPPED", "DELIVERED", "CANCELLED"].map((t) => (
-              <button key={t} className={`tab ${filter === t ? "tab-active" : ""}`} onClick={() => setFilter(t)}>
+              <button key={t} className={`tab transition-colors duration-200 ${filter === t ? "bg-emerald-600 !text-white font-semibold shadow-md" : "!text-white hover:bg-emerald-200 hover:!text-gray-800"}`} onClick={() => setFilter(t)}>
                 {t}
               </button>
             ))}
           </div>
           <div className="form-control">
-            <div className="input input-bordered flex items-center gap-2">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 opacity-60" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <div className="input input-bordered flex items-center gap-2 bg-white border-emerald-600">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 opacity-60 text-emerald-800" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                 <circle cx="11" cy="11" r="7" />
                 <path d="M20 20l-3.5-3.5" />
               </svg>
-              <input type="text" className="grow" placeholder="Search by product" value={q} onChange={(e) => setQ(e.target.value)} />
+              <input type="text" className="grow text-emerald-800 font-semibold" placeholder="Search by product" value={q} onChange={(e) => setQ(e.target.value)} />
             </div>
           </div>
         </div>
@@ -123,36 +123,38 @@ function OrdersBuyer() {
               const { steps, idx } = stepsFor(order.status || "PLACED");
 
               return (
-                <li key={order.id} className="card bg-base-100 border border-base-200 shadow-sm">
+                <li key={order.id} className="card bg-white border border-gray-200 rounded-xl shadow-md 
+                 hover:shadow-2xl hover:border-gray-100 hover:-translate-y-1 
+                 transition-all duration-300 ease-out">
                   <div className="card-body p-4 sm:p-5">
                     <div className="flex flex-col sm:flex-row gap-4">
-                      <div className="w-24 h-24 flex-shrink-0 rounded bg-base-200 overflow-hidden">
+                      <div className="w-24 h-24 flex-shrink-0 rounded bg-gray-300 overflow-hidden">
                         {order.product?.imageUrl ? (
-                          <img src={order.product.imageUrl} alt={order.product?.name || "Product"} className="w-full h-full object-cover" loading="lazy" />
+                          <img src={order.product.imageUrl} alt={order.product?.name || "Product"} className="w-full h-full object-cover text-gray-800" loading="lazy" />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center text-base-content/60 text-sm">No Image</div>
+                          <div className="w-full h-full flex items-center justify-center text-gray-800 text-sm">No Image</div>
                         )}
                       </div>
 
                       <div className="flex-1">
                         <div className="flex flex-wrap items-start justify-between gap-2">
                           <div>
-                            <h3 className="font-semibold line-clamp-1">{order.product?.name || "Unknown Product"}</h3>
-                            <p className="text-sm text-base-content/70">Ordered on {when}</p>
+                            <h3 className="font-semibold line-clamp-1 text-gray-800">{order.product?.name || "Unknown Product"}</h3>
+                            <p className="text-sm text-gray-600">Ordered on {when}</p>
                           </div>
                           <span className={`badge ${statusColor(order.status)}`}>{order.status}</span>
                         </div>
 
                         <div className="mt-2 flex flex-wrap items-center gap-4 text-sm">
-                          <span>Qty: <span className="font-medium">{order.quantity}</span></span>
-                          <span>Unit: <span className="font-medium">${unit.toFixed(2)}</span></span>
-                          <span className="font-semibold">Total: ${total}</span>
+                          <span className="text-gray-800">Qty: <span className="font-medium text-gray-800">{order.quantity}</span></span>
+                          <span className="text-gray-800">Unit: <span className="font-medium text-red-600">৳{unit.toFixed(2)}</span></span>
+                          <span className="font-semibold text-emerald-600">Total: ৳{total}</span>
                         </div>
 
                         <div className="mt-3">
                           <ul className="steps steps-horizontal sm:steps">
                             {steps.map((s, i) => (
-                              <li key={s} className={`step ${i <= idx ? "step-primary" : ""}`}>
+                              <li key={s} className={`step ${i <= idx ? "step-success" : ""}`}>
                                 <span className="hidden sm:inline">{s}</span>
                                 <span className="sm:hidden">{i + 1}</span>
                               </li>
@@ -162,7 +164,7 @@ function OrdersBuyer() {
 
                         {["PLACED","CONFIRMED"].includes(order.status) && (
                           <div className="mt-3">
-                            <button className="btn btn-outline btn-sm" onClick={() => handleCancel(order.id)}>
+                            <button className="btn bg-white border-red-600 text-red-600 hover:bg-red-600 hover:text-white btn-sm" onClick={() => handleCancel(order.id)}>
                               Cancel
                             </button>
                           </div>

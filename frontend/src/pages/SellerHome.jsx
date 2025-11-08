@@ -38,44 +38,50 @@ function SellerHome() {
   ];
 
   return (
-    <div className="flex flex-col min-h-screen bg-base-200">
+    <div className="flex flex-col min-h-screen bg-gray-50">
       <Navbar role="SELLER" />
+
+       <div className="bg-gradient-to-r from-emerald-600 to-teal-500 text-white border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-6 py-10">
+          <h1 className="text-3xl sm:text-4xl font-bold">Welcome To Seller Dashboard</h1>
+          <p className="mt-2 opacity-90">Add new product and manage your products . Manage your orders.</p>
+        </div>
+      </div>
 
       <main className="flex-grow p-6 max-w-7xl mx-auto w-full">
         <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <h2 className="text-3xl font-semibold">Seller Dashboard</h2>
         </div>
 
         {msg && <div className="alert alert-error mb-4"><span>{msg}</span></div>}
 
         <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           {cards.map((c) => (
-            <div key={c.label} className="card bg-base-100 border border-base-200 shadow-sm">
+            <div key={c.label} className="card bg-white border border-gray-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200">
               <div className="card-body">
-                <span className="text-sm text-base-content/70">{c.label}</span>
-                <div className="text-3xl font-semibold">{loading ? "…" : c.value}</div>
+                <span className="text-sm text-gray-700 font-bold">{c.label}</span>
+                <div className="text-3xl font-semibold text-emerald-600">{loading ? "…" : c.value}</div>
               </div>
             </div>
           ))}
         </section>
 
         <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Link to="/seller/products/new" className="card bg-base-100 border border-base-200 shadow-sm hover:shadow-md transition">
+          <Link to="/seller/products/new" className="card bg-white border border-gray-200 shadow-sm hover:shadow-lg transform hover:-translate-y-1 transition duration-200">
             <div className="card-body">
-              <h3 className="card-title">Add a new product</h3>
-              <p className="text-sm text-base-content/70">Create a listing with price, stock, category, and image.</p>
+              <h3 className="card-title text-emerald-600">Add a new product</h3>
+              <p className="text-sm text-gray-600">Create a listing with price, stock, category, and image.</p>
             </div>
           </Link>
-          <Link to="/seller/products" className="card bg-base-100 border border-base-200 shadow-sm hover:shadow-md transition">
+          <Link to="/seller/products" className="card bg-white border border-gray-200 shadow-sm hover:shadow-lg transform hover:-translate-y-1 transition duration-200">
             <div className="card-body">
-              <h3 className="card-title">Manage products</h3>
-              <p className="text-sm text-base-content/70">Edit price/stock, toggle active, or delete items.</p>
+              <h3 className="card-title text-emerald-600">Manage products</h3>
+              <p className="text-sm text-gray-600">Edit price/stock, toggle active, or delete items.</p>
             </div>
           </Link>
-          <Link to="/seller/orders" className="card bg-base-100 border border-base-200 shadow-sm hover:shadow-md transition">
+          <Link to="/seller/orders" className="card bg-white border border-gray-200 shadow-sm hover:shadow-lg transform hover:-translate-y-1 transition duration-200">
             <div className="card-body">
-              <h3 className="card-title">Process orders</h3>
-              <p className="text-sm text-base-content/70">Advance status: PLACED → CONFIRMED → SHIPPED → DELIVERED.</p>
+              <h3 className="card-title text-emerald-600">Process orders</h3>
+              <p className="text-sm text-gray-600">Advance status: PLACED → CONFIRMED → SHIPPED → DELIVERED.</p>
             </div>
           </Link>
         </section>

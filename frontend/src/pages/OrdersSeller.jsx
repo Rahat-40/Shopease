@@ -76,17 +76,21 @@ function OrdersSeller() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-base-200">
+    <div className="flex flex-col min-h-screen bg-gray-50">
       <Navbar role="SELLER" />
       <main className="flex-grow p-6 max-w-7xl mx-auto w-full">
         <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <h2 className="text-2xl font-semibold">Orders Received</h2>
+          <h2 className="text-2xl font-semibold text-emerald-600">Orders Received</h2>
           <div className="flex gap-3">
-            <div className="tabs tabs-boxed">
+            <div className="tabs tabs-boxed bg-gray-300">
               {["ALL", "PLACED", "CONFIRMED", "SHIPPED", "DELIVERED", "CANCELLED"].map((t) => (
                 <button
                   key={t}
-                  className={`tab ${statusFilter === t ? "tab-active" : ""}`}
+                  className={`tab transition-colors duration-200 ${
+                    statusFilter === t
+                      ? "bg-emerald-600 !text-white font-semibold shadow-md"
+                      : "!text-gray-800 hover:bg-emerald-200 hover:text-gray-900"
+                  }`}
                   onClick={() => setStatusFilter(t)}
                 >
                   {t}
@@ -94,7 +98,7 @@ function OrdersSeller() {
               ))}
             </div>
             <div className="form-control">
-              <div className="input input-bordered flex items-center gap-2">
+              <div className="input text-emerald-600 input-bordered flex items-center gap-2 border-emerald-600 bg-white focus-within:ring-2 focus-within:ring-emerald-300 transition-all">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 opacity-60" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                   <circle cx="11" cy="11" r="7" />
                   <path d="M20 20l-3.5-3.5" />
@@ -112,40 +116,43 @@ function OrdersSeller() {
         </div>
 
         {loading ? (
-          <div className="text-center py-10">Loading orders...</div>
+          <div className="text-center py-10 text-gray-600">Loading orders...</div>
         ) : filtered.length === 0 ? (
-          <div className="text-center py-16 text-base-content/70">No orders match your filters.</div>
+          <div className="text-center py-16 text-gray-500">No orders match your filters.</div>
         ) : (
-          <div className="overflow-x-auto rounded-lg border border-base-300 bg-base-100 shadow">
-            <table className="table table-zebra w-full">
-              <thead className="bg-base-200 sticky top-0 z-10">
-                <tr>
+          <div className="overflow-x-auto rounded-lg border border-gray-300 bg-white shadow">
+            <table className="table w-full">
+              <thead className="bg-emerald-600 sticky top-0 z-10">
+                <tr className="text-white font-semibold">
                   <th>Product</th>
                   <th>Buyer</th>
                   <th>Qty</th>
                   <th>Status</th>
-                  <th className="text-right">Action</th>
+                  <th className="text-right">Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {filtered.map((o) => (
-                  <tr key={o.id}>
+                {filtered.map((o, i) => (
+                  <tr
+                    key={o.id}
+                    className={i % 2 === 0 ? "bg-white" : "bg-gray-200"}
+                  >
                     <td className="max-w-xs">
                       <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded bg-base-300 overflow-hidden flex-shrink-0">
+                        <div className="w-12 h-12 rounded bg-gray-600 overflow-hidden flex-shrink-0">
                           {o.product?.imageUrl ? (
                             <img src={o.product.imageUrl} alt={o.product?.name || "Product"} className="w-full h-full object-cover" loading="lazy" />
                           ) : (
-                            <div className="w-full h-full flex items-center justify-center text-xs text-base-content/60">
+                            <div className="w-full h-full flex items-center justify-center text-xs text-gray-400">
                               No Image
                             </div>
                           )}
                         </div>
-                        <div className="truncate">{o.product?.name || "Unknown Product"}</div>
+                        <div className="truncate font-medium text-gray-800">{o.product?.name || "Unknown Product"}</div>
                       </div>
                     </td>
-                    <td className="truncate">{o.buyerEmail}</td>
-                    <td>{o.quantity}</td>
+                    <td className="truncate text-gray-800">{o.buyerEmail}</td>
+                    <td className="text-gray-800">{o.quantity}</td>
                     <td><span className={`badge ${statusColor(o.status)}`}>{o.status}</span></td>
                     <td className="text-right">
                       <div className="join">
@@ -164,7 +171,7 @@ function OrdersSeller() {
                         </select>
                         {nextStatusMap[o.status] && (
                           <button
-                            className={`btn btn-primary btn-sm join-item ${updatingId === o.id ? "btn-disabled" : ""}`}
+                            className={`btn btn-sm border-emerald-600 text-emerald-600 bg-white hover:bg-emerald-600 hover:text-white transition-all ${updatingId === o.id ? "btn-disabled" : ""}`}
                             onClick={() => handleStatusChange(o.id, o.status, nextStatusMap[o.status])}
                             disabled={updatingId === o.id}
                           >

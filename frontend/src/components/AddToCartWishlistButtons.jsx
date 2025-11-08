@@ -3,7 +3,6 @@ import { addToCart } from "../services/cartService";
 import { addToWishlist } from "../services/wishlistService";
 import { useNavigate } from "react-router-dom";
 
-
 function AddToCartWishlistButtons({ product, size = "sm", layout = "row-joined" }) {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
@@ -56,32 +55,40 @@ function AddToCartWishlistButtons({ product, size = "sm", layout = "row-joined" 
     ? "flex flex-col gap-2"
     : "flex items-center gap-2"; // row with gaps
 
-  const commonBtn = `btn ${btnSize} shadow-sm hover:shadow ${loading ? "btn-disabled" : ""}`;
+  const commonBtn = `
+    btn ${btnSize} font-medium transition-all duration-200
+    shadow-sm hover:shadow-md hover:-translate-y-0.5 
+    focus:outline-none focus:ring-2 focus:ring-emerald-400
+    ${loading ? "btn-disabled opacity-70" : ""}
+  `;
+
   const joinedClass = isJoined ? "join-item" : "";
 
   return (
-    <div>
+    <div className="relative">
       <div className={containerClass}>
         <button
-          className={`${commonBtn} ${joinedClass} btn-primary`}
+          className={`${commonBtn} ${joinedClass} btn bg-emerald-600 text-white border-emerald-600 hover:bg-white hover:text-emerald-600`}
           onClick={handleAddToCart}
         >
-          Add to Cart
+          {loading ? "Adding..." : "Add to Cart"}
         </button>
 
         <button
-          className={`${commonBtn} ${joinedClass} btn-outline`}
+          className={`${commonBtn} ${joinedClass} btn-outline border-emerald-600 text-emerald-600 hover:bg-emerald-600 hover:text-white`}
           onClick={handleAddToWishlist}
         >
-         Add to Wishlist
+          Add to Wishlist
         </button>
       </div>
 
       {message && (
-        <div className="mt-2">
-          <div className={`alert ${message.includes("Failed") ? "alert-error" : "alert-success"} py-1 px-2 text-sm`}>
-            <span>{message}</span>
-          </div>
+        <div
+          className={`mt-2 transition-all duration-300 ${
+            message.includes("Failed") ? "text-red-500" : "text-green-600"
+          } text-sm font-medium`}
+        >
+          {message}
         </div>
       )}
     </div>
