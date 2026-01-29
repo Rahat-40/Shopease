@@ -20,14 +20,17 @@ public class ProductController {
     @Autowired
     public ProductController(ProductService productService) { this.productService = productService; }
 
+ // Update getAll method signature
     @GetMapping
     public List<Product> getAll(
             @RequestParam(required = false) String q,
             @RequestParam(required = false) String category,
             @RequestParam(required = false, defaultValue = "name") String sortBy,
-            @RequestParam(required = false, defaultValue = "asc") String order
+            @RequestParam(required = false, defaultValue = "asc") String order,
+            @RequestParam(required = false) String view // <-- NEW PARAMETER
     ) {
-        return productService.searchPublic(q, category, sortBy, order);
+        // Pass the new parameter to the service
+        return productService.searchPublic(q, category, sortBy, order, view); 
     }
 
     @PreAuthorize("hasRole('SELLER')")

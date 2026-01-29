@@ -26,15 +26,19 @@ export const adminToggleProductActive = (id, active) =>
 export const adminDeleteProduct = (id) =>
   API.delete(`/admin/products/${id}`);
 
-// ORDERS
+// ORDERS (Packages)
 export const adminListOrders = (status = "") =>
   API.get(`/admin/orders${status ? `?status=${encodeURIComponent(status)}` : ""}`);
 
-export const adminGetOrder = (id) =>
-  API.get(`/admin/orders/${id}`);
+export const adminGetOrder = (packageId) =>
+  API.get(`/admin/orders/${packageId}`);
 
-export const adminSetOrderStatus = (id, status) =>
-  API.put(`/admin/orders/${id}/status?status=${encodeURIComponent(status)}`);
+export const adminSetOrderStatus = (orderId, status) =>
+  API.put(`/admin/orders/${orderId}/status?status=${encodeURIComponent(status)}`);
+
+export const adminSetPackageStatus = (packageId, status) =>
+  API.put(`/admin/orders/package/${packageId}/status?status=${encodeURIComponent(status)}`);
+
 
 // STATS (for AdminHome KPIs)
 export const adminGetStats = () =>

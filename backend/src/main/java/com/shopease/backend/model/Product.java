@@ -108,4 +108,27 @@ public class Product {
 
     @Column(nullable = false)
     private boolean active = true;
+    
+    @Column(nullable = false)
+    private double avgRating = 0.0;
+
+    @Column(nullable = false)
+    private int totalReviews = 0;
+
+	public double getAvgRating() {
+		return avgRating;
+	}
+
+	public void setAvgRating(double avgRating) {
+		this.avgRating = avgRating;
+	}
+
+	public int getTotalReviews() {
+		return totalReviews;
+	}
+
+	public void setTotalReviews(int totalReviews) {
+		this.totalReviews = totalReviews;
+	}
+   
 }

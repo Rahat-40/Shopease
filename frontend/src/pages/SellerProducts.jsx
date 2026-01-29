@@ -206,12 +206,12 @@ function SellerProducts() {
 
                     <td className="text-right">
                       <div className="flex-justify-end space-x-1">
-                        <Link
+                        {/* <Link
                           to={`/seller/products/${p.id}/edit`}
                           className="btn bg-white border-emerald-600 text-emerald-600 btn-sm  hover:bg-emerald-600 hover:text-white"
                         >
                           Edit
-                        </Link>
+                        </Link> */}
                         {confirmId === p.id ? (
                           <>
                             <button

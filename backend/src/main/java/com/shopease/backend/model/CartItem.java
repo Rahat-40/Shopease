@@ -20,7 +20,7 @@ public class CartItem {
 
     // Link to product
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "product_id")//, insertable = false, updatable = false)
+    @JoinColumn(name = "product_id")
     private Product product;
 
     public Long getId() {

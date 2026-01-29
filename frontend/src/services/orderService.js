@@ -1,30 +1,37 @@
 import API from "./api";
 
-
-// Get buyer orders by email
+// Get all orders of the logged-in buyer (returns OrderPackage[])
 export async function getBuyerOrders() {
-  return await API.get(`/orders/buyer/me`);
+  return await API.get("/orders/buyer/me");
 }
 
-
-
-// Get seller orders by email
-export async function getSellerOrders(params ={}) {
-  return await API.get(`/orders/seller/me`,{params});
+// Get all orders of the logged-in seller (returns Order[])
+export async function getSellerOrders(params = {}) {
+  return await API.get("/orders/seller/me", { params });
 }
 
-
-// Place a new order
-export async function placeOrder(playload) {
-  return await API.post("/orders", playload);
+// Initiates payment with SSLCommerz. 
+export async function initiatePayment(orderPackagePayload) {
+  return await API.post("/orders/buyer/initiate", orderPackagePayload);
 }
-// for cancle order
-export async function cancelBuyerOrder(id) 
-{
-  return await API.put(`/orders/${id}/cancel`);
-} 
-// Update order status
+
+//  Handle Cash on Delivery API call
+export async function placeCodOrder(orderPackagePayload) {
+  // Calls the new backend endpoint /api/orders/buyer/cod
+  return await API.post("/orders/buyer/cod", orderPackagePayload);
+}
+
+//  Fetch order details using the transaction ID
+export async function fetchOrderPackageByTrxId(transactionId) {
+    // Calls the new secure GET endpoint on the backend
+    return await API.get(`/orders/buyer/transaction/${transactionId}`);
+}
+
+// Cancel an order package (by package id)
+export async function cancelBuyerOrder(id) {
+  return await API.put(`/orders/buyer/cancel/${id}`);
+}
+
 export async function updateOrderStatus(id, status) {
-  // Using request body for status update can also be an option
-  return await API.put(`/orders/${id}/status`, null, { params: { status } });
-} 
+  return await API.put(`/orders/order/${id}/status`, null, { params: { status } });
+}

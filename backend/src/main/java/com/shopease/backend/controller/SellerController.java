@@ -1,4 +1,3 @@
-// src/main/java/com/shopease/backend/controller/SellerController.java
 package com.shopease.backend.controller;
 
 import com.shopease.backend.model.Product;
@@ -32,8 +31,12 @@ public class SellerController {
     long totalProducts = mine.size();
     long activeListings = mine.stream().filter(Product::isActive).count();
 
-    long pendingOrders = orderRepository.countBySellerEmailAndStatusIn(email, java.util.List.of("PLACED","CONFIRMED"));
-    long deliveredOrders = orderRepository.countBySellerEmailAndStatus(email, "DELIVERED");
+    long pendingOrders = orderRepository.countByProduct_SellerEmailAndStatusIn(
+            email, List.of("PLACED","CONFIRMED")
+    );
+    long deliveredOrders = orderRepository.countByProduct_SellerEmailAndStatus(
+            email, "DELIVERED"
+    );
 
     return Map.of(
       "totalProducts", totalProducts,

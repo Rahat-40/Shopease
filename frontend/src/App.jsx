@@ -3,7 +3,6 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import BuyerHome from "./pages/BuyerHome";
 import SellerHome from "./pages/SellerHome";
-//import AdminHome from "./pages/AdminHome";
 import BuyerProducts from "./pages/BuyerProducts";
 import Cart from "./pages/Cart";
 import Wishlist from "./pages/Wishlist";
@@ -23,6 +22,14 @@ import AdminProducts from "./pages/AdminProducts";
 import AdminOrders from "./pages/AdminOrders";
 import AdminOrderDetail from "./pages/AdminOrderDetail";
 
+import MyMessages from "./pages/MyMessages";
+import MessageThread from "./pages/MessageThread";
+
+import AdminMessages from "./pages/AdminMessages";
+import AdminMessageThread from "./pages/AdminMessageThread";
+import PaymentStatus from "./pages/PaymentStatus"; 
+import OrderSuccess from "./pages/OrderSuccess"; 
+
 function App() {
   return (
     <Router>
@@ -35,6 +42,10 @@ function App() {
         {/* Auth */}
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        
+        {/*SSLCommerz redirect landing page */}
+        <Route path="/order/:status/:transactionId" element={<PaymentStatus />} />
+        <Route path="/order/success/:transactionId" element={<OrderSuccess />} /> 
 
         {/* Protected dashboards*/}
         <Route path="/buyer" element={
@@ -62,6 +73,10 @@ function App() {
           <ProtectedRoute allowedRoles={["BUYER"]}><BuyerProducts/></ProtectedRoute>
         } />
 
+                {/* Buyer Messages */}
+        <Route path="/messages" element={<ProtectedRoute allowedRoles={["BUYER", "SELLER"]}><MyMessages /></ProtectedRoute>} />
+        <Route path="/messages/:id" element={<ProtectedRoute allowedRoles={["BUYER", "SELLER"]}><MessageThread /></ProtectedRoute>} />
+
         
         {/* // Protected seller*/}
         <Route path="/seller/products" element={
@@ -74,6 +89,10 @@ function App() {
           <ProtectedRoute allowedRoles={["SELLER"]}><OrdersSeller/></ProtectedRoute>
         } />
 
+        {/* <Route path="/messages" element={<ProtectedRoute allowedRoles={["SELLER"]}><MyMessages /></ProtectedRoute>} />
+        <Route path="/messages/:id" element={<ProtectedRoute allowedRoles={["SELLER"]}><MessageThread /></ProtectedRoute>} /> */}
+
+
         {/** admin  */}
         <Route path="/admin" element={<ProtectedRoute allowedRoles={["ADMIN"]}><AdminHome /></ProtectedRoute>} />
         <Route path="/admin/users" element={<ProtectedRoute allowedRoles={["ADMIN"]}><AdminUsers /></ProtectedRoute>} />
@@ -81,7 +100,9 @@ function App() {
         <Route path="/admin/orders" element={<ProtectedRoute allowedRoles={["ADMIN"]}><AdminOrders /></ProtectedRoute>} />
         <Route path="/admin/orders/:id" element={<ProtectedRoute allowedRoles={["ADMIN"]}><AdminOrderDetail /></ProtectedRoute>} />
 
-
+        {/* Admin Messages */}
+        <Route path="/admin/messages" element={<ProtectedRoute allowedRoles={["ADMIN"]}><AdminMessages /></ProtectedRoute>} />
+        <Route path="/admin/messages/:id" element={<ProtectedRoute allowedRoles={["ADMIN"]}><AdminMessageThread /></ProtectedRoute>} />
 
       </Routes>
     </Router>

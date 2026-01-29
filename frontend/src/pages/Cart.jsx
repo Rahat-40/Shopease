@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { getCart, removeFromCart } from "../services/cartService";
+import { getCart, removeFromCart, updateCartQuantity } from "../services/cartService"; 
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -13,39 +13,81 @@ function Cart() {
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
 
+  // Helper function for fetching and setting cart data 
+  const fetchAndSetCart = async () => {
+    setLoading(true);
+    try {
+      const res = await getCart(email);
+      const mergedMap = new Map();
+      res.data.forEach((item) => {
+        const id = item.product.id;
+        if (mergedMap.has(id)) {
+          const existing = mergedMap.get(id);
+          mergedMap.set(id, {
+            ...existing,
+            quantity: existing.quantity + item.quantity,
+          });
+        } else {
+          mergedMap.set(id, { ...item });
+        }
+      });
+      const merged = Array.from(mergedMap.values());
+      setCartItems(merged);
+      setMessage(merged.length === 0 ? "Your cart is empty." : "");
+    } catch {
+      setMessage("Failed to load cart.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   useEffect(() => {
     if (!email) {
       navigate("/login");
       return;
     }
-    async function fetchCart() {
-      setLoading(true);
-      try {
-        const res = await getCart(email);
-        const mergedMap = new Map();
-        res.data.forEach((item) => {
-          const id = item.product.id;
-          if (mergedMap.has(id)) {
-            const existing = mergedMap.get(id);
-            mergedMap.set(id, {
-              ...existing,
-              quantity: existing.quantity + item.quantity,
-            });
-          } else {
-            mergedMap.set(id, { ...item });
-          }
-        });
-        const merged = Array.from(mergedMap.values());
-        setCartItems(merged);
-        setMessage(merged.length === 0 ? "Your cart is empty." : "");
-      } catch {
-        setMessage("Failed to load cart.");
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchCart();
+    fetchAndSetCart();
   }, [email, navigate]);
+
+  //  Quantity Handlers
+  const handleQuantityChange = async (productId, value) => {
+    const newQuantity = Number(value);
+    
+    //  Validate input
+    if (Number.isNaN(newQuantity) || newQuantity < 1) return;
+
+    //  Optimistic UI Update (Fast visual feedback)
+    setCartItems((prev) =>
+      prev.map((item) =>
+        item.product.id === productId ? { ...item, quantity: newQuantity } : item
+      )
+    );
+
+    //  API Call to Backend
+    try {
+        await updateCartQuantity(email, productId, newQuantity);
+    } catch(e) {
+        // Revert UI and re-fetch on failure
+        setMessage("❌ Failed to update quantity. Try refreshing.");
+        fetchAndSetCart(); 
+    }
+  };
+
+  const handleIncrement = (productId) => {
+    const item = cartItems.find(it => it.product.id === productId);
+    if (item) {
+        handleQuantityChange(productId, item.quantity + 1);
+    }
+  };
+
+  const handleDecrement = (productId) => {
+    const item = cartItems.find(it => it.product.id === productId);
+    if (item && item.quantity > 1) {
+        handleQuantityChange(productId, item.quantity - 1);
+    }
+  };
+  //  End Quantity Handlers
+
 
   const handleSelectItem = (productId, checked) => {
     setSelectedItems((prev) => ({ ...prev, [productId]: checked }));
@@ -56,9 +98,9 @@ function Cart() {
     setMessage("");
     try {
       await removeFromCart(email, productId);
-      const res = await getCart(email);
-      setCartItems(res.data);
-      setMessage(res.data.length === 0 ? "Your cart is empty." : "Item removed from cart.");
+      //  Use refactored helper function
+      await fetchAndSetCart(); 
+      setMessage("Item removed from cart.");
     } catch {
       setMessage("Failed to remove item.");
     } finally {
@@ -87,7 +129,7 @@ function Cart() {
     navigate("/checkout", { state: { items: selectedList } });
   };
 
-  if (loading)
+  if (loading && cartItems.length === 0) // Only show full loading screen on initial load
     return (
       <>
         <Navbar role="BUYER" />
@@ -117,7 +159,7 @@ function Cart() {
         {message && (
           <div
             role="status"
-            className={`alert ${message.includes("Failed") ? "alert-error" : "alert-info"} mb-4`}
+            className={`alert ${message.includes("Failed") || message.startsWith("❌") ? "alert-error" : "alert-info"} mb-4`}
           >
             <span>{message}</span>
           </div>
@@ -132,7 +174,7 @@ function Cart() {
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Left: items (2 cols on lg+) */}
+            {/* Left: items  */}
             <section className="lg:col-span-2 space-y-4">
               {cartItems.map((item) => (
                 <div key={item.id} className="card bg-white shadow-md border border-gray-200 hover:shadow-xl transition duration-300">
@@ -145,6 +187,7 @@ function Cart() {
                           className="checkbox checkbox-success"
                           checked={!!selectedItems[item.product.id]}
                           onChange={(e) => handleSelectItem(item.product.id, e.target.checked)}
+                          disabled={loading}
                         />
                       </div>
 
@@ -186,10 +229,44 @@ function Cart() {
                           </div>
                         </div>
 
-                        {/* Quantity display; optionally replace with buttons + input per best practices */}
-                        <p className="mt-2 text-sm text-base-200">
-                          Quantity: <span className="font-medium">{item.quantity}</span>
-                        </p>
+                        {/* Quantity Control Section */}
+                        <div className="mt-2">
+                           <div className="join">
+                            <button
+                              className="btn join-item btn-sm"
+                              aria-label="Decrease quantity"
+                              onClick={() => handleDecrement(item.product.id)}
+                              disabled={loading || item.quantity <= 1}
+                            >
+                              −
+                            </button>
+                            <input
+                              type="number"
+                              min={1}
+                              value={item.quantity}
+                              onChange={(e) =>
+                                handleQuantityChange(
+                                  item.product.id,
+                                  e.target.value
+                                )
+                              }
+                              className="input input-bordered join-item w-16 text-center input-sm"
+                              disabled={loading}
+                              aria-live="polite"
+                              aria-label="Quantity"
+                            />
+                            <button
+                              className="btn join-item btn-sm"
+                              aria-label="Increase quantity"
+                              onClick={() => handleIncrement(item.product.id)}
+                              disabled={loading}
+                            >
+                              +
+                            </button>
+                          </div>
+                        </div>
+                        {/* END Quantity Control Section */}
+
                       </div>
                     </div>
                   </div>
@@ -250,6 +327,3 @@ function Cart() {
 }
 
 export default Cart;
-
-
-

@@ -22,7 +22,34 @@ public class JwtFilter extends OncePerRequestFilter {
     public JwtFilter(JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
     }
+ //  Tell the filter which paths to ignore 
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String path = request.getRequestURI();
+        String method = request.getMethod();
 
+        // This is crucial for the SSLCommerz callback, which uses a POST method.
+        if (path.startsWith("/api/auth/") ||
+            path.equals("/api/contact") ||
+            path.startsWith("/api/orders/payment/") || 
+            path.startsWith("/images/")
+        ) {
+            return true; // Skip filtering (no JWT needed)
+        }
+        
+     // Public product list + product details
+        if (method.equals("GET") &&
+            (path.equals("/api/products") || path.matches("/api/products/\\d+"))) {
+            return true;
+        }
+
+        // Public reviews
+        if (method.equals("GET") && path.startsWith("/api/reviews/")) {
+            return true;
+        }
+
+        return false; // Apply JWT filter to all other requests
+    }
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,

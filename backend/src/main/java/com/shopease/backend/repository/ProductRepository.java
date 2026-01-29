@@ -6,7 +6,10 @@ import java.util.List;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findBySellerEmail(String email);
-
+    
+    List<Product> findByActiveTrueOrderByTotalReviewsDesc();
+    List<Product> findByActiveTrueOrderByAvgRatingDesc();
+    
     List<Product> findByActiveTrue();
     List<Product> findByActiveTrueAndCategoryIgnoreCase(String category);
     List<Product> findByActiveTrueAndNameContainingIgnoreCase(String q);

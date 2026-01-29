@@ -14,3 +14,8 @@ export async function addToCart(cartItem) {
 export async function removeFromCart(email, productId) {
   return await API.delete(`/cart/${email}/${productId}`);
 }
+
+// Update Quantity
+export async function updateCartQuantity(email, productId, quantity) {
+  return await API.put(`/cart/${email}/${productId}`, { quantity });
+}

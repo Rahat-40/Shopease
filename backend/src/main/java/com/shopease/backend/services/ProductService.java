@@ -15,17 +15,47 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
-    public List<Product> searchPublic(String q, String category, String sortBy, String order) {
+ // Add 'view' parameter
+    public List<Product> searchPublic(String q, String category, String sortBy, String order, String view) { 
         boolean hasQ = q != null && !q.isBlank();
         boolean hasC = category != null && !category.isBlank() && !"ALL".equalsIgnoreCase(category);
+        boolean hasView = view != null && !view.isBlank(); 
 
         List<Product> list;
-        if (hasC && hasQ) list = productRepository.findByActiveTrueAndCategoryIgnoreCaseAndNameContainingIgnoreCase(category, q);
-        else if (hasC) list = productRepository.findByActiveTrueAndCategoryIgnoreCase(category);
-        else if (hasQ) list = productRepository.findByActiveTrueAndNameContainingIgnoreCase(q);
-        else list = productRepository.findByActiveTrue();
 
-        sortInMemory(list, sortBy, order);
+        if (hasView) {
+            // Handle specific views Top Seller
+            if ("TOP_SELLERS".equalsIgnoreCase(view)) {
+                // Use the repository method for the featured view
+            	list = productRepository.findByActiveTrueOrderByAvgRatingDesc();
+            } 
+
+            else {
+                 // Fallback to default fetch if view is unknown but present
+                 list = productRepository.findByActiveTrue();
+            }
+
+            
+        } else if (hasC && hasQ) {
+            list = productRepository.findByActiveTrueAndCategoryIgnoreCaseAndNameContainingIgnoreCase(category, q);
+        } else if (hasC) {
+            list = productRepository.findByActiveTrueAndCategoryIgnoreCase(category);
+        } else if (hasQ) {
+            list = productRepository.findByActiveTrueAndNameContainingIgnoreCase(q);
+        } else {
+            list = productRepository.findByActiveTrue();
+        }
+        
+        // If a view was NOT specified, then apply sorting, otherwise skip it.
+        if (!hasView) {
+          sortInMemory(list, sortBy, order);
+        }
+        
+        //  Limit the number of products returned for the featured view
+        if (hasView && list.size() > 12) {
+            return list.subList(0, 12);
+        }
+
         return list;
     }
 
@@ -90,7 +120,7 @@ public class ProductService {
     }
     
     
-    // for admin
+    
  // Return all products (active+inactive) with simple filters
     public List<Product> listAllForAdmin(String q, String category) {
       List<Product> all = productRepository.findAll();
@@ -109,7 +139,6 @@ public class ProductService {
       if (patch.getStock() != null) existing.setStock(patch.getStock());
       if (patch.getImageUrl() != null) existing.setImageUrl(patch.getImageUrl());
       if (patch.getCategory() != null) existing.setCategory(patch.getCategory());
-      // only flip to false if explicitly provided; otherwise keep
       if (patch.isActive() != existing.isActive()) existing.setActive(patch.isActive());
       return productRepository.save(existing);
     }

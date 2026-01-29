@@ -1,4 +1,3 @@
-// src/pages/AdminUsers.jsx
 import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -9,7 +8,8 @@ function AdminUsers() {
   const [users, setUsers] = useState([]);
   const [msg, setMsg] = useState("");
   const [loading, setLoading] = useState(true);
-
+  
+  // load all users
   const load = async () => {
     setLoading(true);
     try {
@@ -24,6 +24,7 @@ function AdminUsers() {
 
   useEffect(() => { load(); }, []);
 
+  // change user role
   const changeRole = async (id, role) => {
     try {
       await adminSetUserRole(id, role);
@@ -32,6 +33,7 @@ function AdminUsers() {
     } catch { setMsg("Failed to update role."); }
   };
 
+// delete users
   const deleteUser = async (id) => {
     if (!confirm("Delete this user?")) return;
     try {
@@ -55,6 +57,8 @@ function AdminUsers() {
         {msg && <div className="alert alert-info mb-3"><span>{msg}</span></div>}
         <div className="card bg-white border border-gray-200 shadow-2xl rounded-lg">
           <div className="card-body overflow-x-auto">
+            
+            {/** table for manage all users */}
             {loading ? <div className="text-center py-10 text-gray-500">Loading...</div> : (
               <table className="table w-full">
                 <thead className="bg-emerald-600 sticky top-0 z-10"><tr className="text-white font-semibold"><th>ID</th><th>Name</th><th>Email</th><th>Role</th><th className="text-right"> Action</th></tr></thead>

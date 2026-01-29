@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import API from "../services/api";
+import { useNavigate } from "react-router-dom";
 
 function Contact() {
   const [form, setForm] = useState({
@@ -10,6 +11,8 @@ function Contact() {
     subject: "",
     message: "",
   });
+  const navigate = useNavigate();
+  const token = sessionStorage.getItem("token");
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState("");
 
@@ -29,6 +32,11 @@ function Contact() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!token) {
+      alert("Please login first to send a message.");
+      navigate("/login");
+      return;
+    }
     const v = validate();
     if (v) { setMsg(v); return; }
     try {

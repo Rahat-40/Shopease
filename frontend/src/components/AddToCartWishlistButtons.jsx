@@ -16,6 +16,7 @@ function AddToCartWishlistButtons({ product, size = "sm", layout = "row-joined" 
     navigate("/login");
   };
 
+  // add to cart funtion
   const handleAddToCart = async () => {
     if (!token || !buyerEmail) return requireLogin();
     try {
@@ -30,6 +31,7 @@ function AddToCartWishlistButtons({ product, size = "sm", layout = "row-joined" 
     }
   };
 
+  // add to wishlish funtion
   const handleAddToWishlist = async () => {
     if (!token || !buyerEmail) return requireLogin();
     try {
@@ -53,7 +55,7 @@ function AddToCartWishlistButtons({ product, size = "sm", layout = "row-joined" 
     ? "join"
     : layout === "column"
     ? "flex flex-col gap-2"
-    : "flex items-center gap-2"; // row with gaps
+    : "flex items-center gap-2"; 
 
   const commonBtn = `
     btn ${btnSize} font-medium transition-all duration-200

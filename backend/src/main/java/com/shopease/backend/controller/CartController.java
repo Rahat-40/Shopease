@@ -10,6 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -39,5 +40,20 @@ public class CartController {
     @DeleteMapping("/{email}/{productId}")
     public void remove(@PathVariable String email, @PathVariable Long productId) {
         cartService.removeCartItem(email, productId);
+    }
+    
+
+    @PreAuthorize("hasRole('BUYER')")
+    @PutMapping("/{email}/{productId}")
+    public CartItem updateQuantity(
+            @PathVariable String email,
+            @PathVariable Long productId,
+            @RequestBody Map<String, Integer> payload) {
+        
+        Integer newQuantity = payload.get("quantity");
+        if (newQuantity == null) {
+            throw new IllegalArgumentException("Quantity is required");
+        }
+        return cartService.updateCartItemQuantity(email, productId, newQuantity);
     }
 }

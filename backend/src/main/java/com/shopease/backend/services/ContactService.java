@@ -41,7 +41,6 @@ public class ContactService {
   public ContactMessage getThreadForUser(Long id, String userEmail) {
     ContactMessage m = messages.findById(id).orElseThrow();
     if (!Objects.equals(m.getUserEmail(), userEmail)) throw new SecurityException("Forbidden");
-    // replies are LAZY; if the controller needs them serialized, ensure transaction is open or access m.getReplies().size()
     return m;
   }
 

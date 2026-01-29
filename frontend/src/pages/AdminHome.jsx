@@ -1,4 +1,3 @@
-// src/pages/AdminHome.jsx
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
@@ -29,14 +28,15 @@ function AdminHome() {
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       <Navbar role="ADMIN" />
-
+       {/** admin hero section */}
        <div className="bg-gradient-to-r from-emerald-600 to-teal-500 text-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-6 py-10">
-          <h1 className="text-3xl sm:text-4xl font-bold">Welcome To Admin Dashboard</h1>
+          <h1 className="text-3xl sm:text-4xl font-bold">Platform Governance: Administrator Hub</h1>
           <p className="mt-2 opacity-90">See your users and seller products . Manage users and give support to the users.</p>
         </div>
       </div>
 
+{/** admin main section */}
       <main className="flex-grow p-6 w-full max-w-7xl mx-auto">
         <div className="mb-6">
           <h1 className="text-3xl font-semibold text-emerald-600">Admin Dashboard</h1>
@@ -45,6 +45,7 @@ function AdminHome() {
 
         {msg && <div className="alert alert-error mb-4"><span>{msg}</span></div>}
 
+        {/** manage uses */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
           <Link
             to="/admin/users"
@@ -57,6 +58,7 @@ function AdminHome() {
             </div>
           </Link>
 
+          {/** manage product */}
           <Link
             to="/admin/products"
             className="bg-white border border-gray-200 shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-200 rounded-lg p-6 flex flex-col items-center justify-center text-center"
@@ -68,6 +70,7 @@ function AdminHome() {
             </div>
           </Link>
 
+         {/** manage orders */}
           <Link
             to="/admin/orders"
             className="bg-white border border-gray-200 shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-200 rounded-lg p-6 flex flex-col items-center justify-center text-center"
@@ -79,6 +82,7 @@ function AdminHome() {
             </div>
           </Link>
 
+          {/** manage message */}
           <Link
             to="/admin/messages"
             className="bg-white border border-gray-200 shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-200 rounded-lg p-6 flex flex-col items-center justify-center text-center"

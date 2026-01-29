@@ -12,6 +12,7 @@ export default function AdminProducts() {
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState({});
 
+  // funtion for load all products
   const load = async () => {
     setLoading(true);
     try {
@@ -43,7 +44,7 @@ export default function AdminProducts() {
       load();
     } catch { setMsg("Failed to save."); }
   };
-
+// funtion for update product staus active or deactive
   const toggleActive = async (id, active) => {
     try {
       await adminToggleProductActive(id, active);
@@ -52,6 +53,7 @@ export default function AdminProducts() {
     } catch { setMsg("Failed to update status."); }
   };
 
+  // handle product deletion
   const del = async (id) => {
     if (!confirm("Delete this product?")) return;
     try {
@@ -68,13 +70,20 @@ export default function AdminProducts() {
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-2xl font-semibold text-emerald-600">Products</h1>
           <div className="flex gap-2">
+
+            {/** Search product */}
             <input className="input input-bordered border-emerald-600 bg-white focus:ring-2 focus:ring-emerald-300 transition-all text-emerald-800 font-bold" placeholder="Search name" value={filters.q} onChange={e=>setFilters(f=>({...f, q:e.target.value}))} />
+
+            {/** sort product according to category */}
             <input className="input input-bordered border-emerald-600 bg-white focus:ring-2 focus:ring-emerald-300 transition-all text-emerald-800 font-bold" placeholder="Filter category" value={filters.category} onChange={e=>setFilters(f=>({...f, category:e.target.value}))} />
+
             <button className="btn bg-emerald-600 text-white border-emerald-600 hover:bg-white hover:text-emerald-600" onClick={load}>Apply</button>
           </div>
         </div>
         {msg && <div className="alert alert-info mb-3"><span>{msg}</span></div>}
         <div className="card bg-white border border-gray-200 shadow-2xl rounded-lg">
+
+          {/** product table show all product */}
           <div className="card-body overflow-x-auto">
             {loading ? <div className="text-center py-10 text-gray-500">Loading...</div> : (
               <table className="table w-full">
@@ -105,6 +114,8 @@ export default function AdminProducts() {
                         ) : (p.stock ?? 0)}
                       </td>
                       <td  className="text-gray-900">{p.sellerEmail}</td>
+                      
+                      {/** toggle product status */}
                       <td>
                         <label className="relative inline-flex items-center cursor-pointer">
                         <input
