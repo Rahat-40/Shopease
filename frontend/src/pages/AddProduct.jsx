@@ -211,7 +211,7 @@ function AddProduct() {
                     src={imagePreview}
                     alt="Preview"
                     className="w-full h-full object-cover"
-                    onError={() => setImagePreview("/images/placeholder.jpg")}
+                    onError={() => setImagePreview("/placeholder.jpg")}
                   />
                 ) : (
                   <span className="font-bold text-gray-800 text-sm">No image</span>

@@ -1,14 +1,13 @@
 package com.shopease.backend.controller;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.nio.file.*;
 import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
@@ -17,31 +16,95 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 @RequestMapping("/api/files")
 public class LocalFileController {
 
-    private final Path root = Paths.get(System.getProperty("user.dir"), "uploads", "images");
+    private final Cloudinary cloudinary;
 
-    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public Map<String, String> upload(@RequestParam("file") MultipartFile file) {
+    public LocalFileController(Cloudinary cloudinary) {
+        this.cloudinary = cloudinary;
+    }
+
+    @PostMapping(
+            value = "/upload",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+    )
+    public Map<String, String> upload(
+            @RequestParam("file") MultipartFile file
+    ) {
+
         try {
-            if (file.isEmpty()) throw new ResponseStatusException(BAD_REQUEST, "Empty file");
-            if (file.getSize() > 10 * 1024 * 1024) throw new ResponseStatusException(BAD_REQUEST, "File too large (max 10MB)");
-            String ct = Optional.ofNullable(file.getContentType()).orElse("");
-            if (!ct.startsWith("image/")) throw new ResponseStatusException(BAD_REQUEST, "Only image files are allowed");
 
-            String origin = Optional.ofNullable(file.getOriginalFilename()).orElse("image.jpg");
-            String ext = origin.contains(".") ? origin.substring(origin.lastIndexOf(".")) : ".jpg";
-            String name = UUID.randomUUID().toString().replace("-", "") + ext;
+            // -------------------------------------------------
+            // Validate file
+            // -------------------------------------------------
 
-            Files.createDirectories(root);
-            Files.copy(file.getInputStream(), root.resolve(name), StandardCopyOption.REPLACE_EXISTING);
+            if (file == null || file.isEmpty()) {
+                throw new ResponseStatusException(
+                        BAD_REQUEST,
+                        "Empty file"
+                );
+            }
 
-            String baseUrl = "http://localhost:8080"; 
-            return Map.of("url", baseUrl + "/images/" + name);
+            if (file.getSize() > 10 * 1024 * 1024) {
+                throw new ResponseStatusException(
+                        BAD_REQUEST,
+                        "File too large (max 10MB)"
+                );
+            }
+
+            String contentType = file.getContentType();
+
+            if (contentType == null ||
+                    !contentType.startsWith("image/")) {
+
+                throw new ResponseStatusException(
+                        BAD_REQUEST,
+                        "Only image files are allowed"
+                );
+            }
+
+            // -------------------------------------------------
+            // Upload to Cloudinary
+            // -------------------------------------------------
+
+            Map<?, ?> uploadResult =
+                    cloudinary.uploader().upload(
+                            file.getBytes(),
+                            ObjectUtils.asMap(
+                                    "folder", "shopease/products",
+                                    "resource_type", "image",
+                                    "unique_filename", true,
+                                    "overwrite", false
+                            )
+                    );
+
+            // -------------------------------------------------
+            // Cloudinary secure URL
+            // -------------------------------------------------
+
+            String secureUrl =
+                    (String) uploadResult.get("secure_url");
+
+            if (secureUrl == null || secureUrl.isBlank()) {
+                throw new RuntimeException(
+                        "Cloudinary did not return an image URL"
+                );
+            }
+
+            return Map.of(
+                    "url", secureUrl
+            );
 
         } catch (ResponseStatusException ex) {
+
             throw ex;
+
         } catch (Exception ex) {
+
             ex.printStackTrace();
-            throw new ResponseStatusException(INTERNAL_SERVER_ERROR, "Upload failed");
+
+            throw new ResponseStatusException(
+                    INTERNAL_SERVER_ERROR,
+                    "Image upload failed"
+            );
         }
     }
 }

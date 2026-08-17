@@ -3,7 +3,7 @@ package com.shopease.backend.model;
 import lombok.*;
 
 @Data
-@AllArgsConstructor
+
 @NoArgsConstructor
 public class CartItemResponse {
     private Long productId;
